@@ -5,7 +5,6 @@
     fxLayoutAlign.gt-md="space-around center"
     fxLayoutGap="10px" 
     fxLayoutGap.xs="0">
-
   <div fxFlex="40">
     <md-card *ngIf="dish">
       <md-card-header>
@@ -18,24 +17,58 @@
         <p>{{dish.description}}
         </p>
       </md-card-content>
-      <md-card-actions>
+      <md-card-actions style="width: 111%">
+        <button md-button [routerLink]="['/dishdetail', prev]"><span class="fa fa-chevron-left fa-lg"></span></button>
         <button md-button (click)="goBack()">BACK</button>
         <button md-button>LIKE</button>
         <button md-button>SHARE</button>
+        <span class="flex-spacer"></span>
+        <button md-button [routerLink]="['/dishdetail', next]"><span class="fa fa-chevron-right fa-lg"></span></button>
       </md-card-actions>
-    </md-card>
+    </md-card>    
   </div>
-
   <div fxFlex="40">
-    <md-list>
+    <md-list *ngIf="dish">
       <h3 md-header>Comments</h3>
   <md-list-item *ngFor="let comment of dish.comments">
      <h4 md-line>{{comment.comment}}</h4>
       <p md-line class="demo-2"> --{{comment.author}} {{comment.date | date}} </p>    
   </md-list-item>
-</md-list>
-   
-  </div>
-
+  <md-list-item>
+     <h4 md-line>{{feedbackForm.value.feedback}}</h4>
+      <p md-line class="demo-2">--{{feedbackForm.value.firstname}} </p>    
+  </md-list-item>
+    <form [formGroup]="feedbackForm" (ngSubmit)="giveReview()">
+      <div layout="column">
+        <div>
+          <md-input-container class="half-width" style="width:100%;"
+          dividerColor="{{(formErrors.firstname) ? 'warn' : 'primary'}}">
+            <input mdInput placeholder="First Name" formControlName="firstname" type="text" required>
+            <md-hint>
+                <span [hidden]="!(formErrors.firstname)">
+                  {{formErrors.firstname}}</span>
+              </md-hint>
+          </md-input-container> 
+        </div>
+        <div>   
+          <md-slider min="1" max="5" step="1" value="1"></md-slider> 
+        </div>
+        <div>
+          <md-input-container class="full-width" style="width:100%;"
+          dividerColor="{{(formErrors.feedback) ? 'warn' : 'primary'}}">
+            <textarea mdInput formControlName="feedback" placeholder="Your Feedback" rows=5></textarea>
+            <md-hint>
+                <span [hidden]="!(formErrors.feedback)">
+                  {{formErrors.feedback}}</span>
+              </md-hint>
+          </md-input-container>
+        </div>
+        <button type="submit" md-button class="background-primary text-floral-blue" [disabled]="feedbackForm.invalid">Submit</button> 
+      </div>         
+    </form>
+</md-list>   
+  </div>  
 </div>
-
+<div [hidden]="dish">
+    <md-spinner></md-spinner><h4>Loading . . . Please Wait</h4>
+  </div>
